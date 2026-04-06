@@ -4,6 +4,8 @@ struct SidebarView: View {
     @Binding var profile: ScanProfile
     @Binding var showingHistory: Bool
 
+    private let sidebarBlue = Color(red: 0.863, green: 0.910, blue: 0.957)
+
     var body: some View {
         List {
             Section {
@@ -17,16 +19,16 @@ struct SidebarView: View {
                 sortSection
                 optionsSection
             }
-            .listRowBackground(Color(nsColor: .controlBackgroundColor).opacity(0.5))
+            .listRowBackground(sidebarBlue)
 
             Section {
                 historyButton
             }
-            .listRowBackground(Color(nsColor: .controlBackgroundColor).opacity(0.5))
+            .listRowBackground(sidebarBlue)
         }
         .listStyle(.sidebar)
         .scrollContentBackground(.hidden)
-        .background(Color(nsColor: .controlBackgroundColor).opacity(0.4))
+        .background(sidebarBlue)
     }
 
     private var searchField: some View {
@@ -40,7 +42,7 @@ struct SidebarView: View {
         }
         .padding(.vertical, 6)
         .padding(.horizontal, 8)
-        .background(Color(nsColor: .textBackgroundColor))
+        .background(Color.white.opacity(0.6))
         .cornerRadius(6)
     }
 
@@ -69,11 +71,12 @@ struct SidebarView: View {
                 HStack {
                     Text("Mínimo:")
                         .font(.caption)
-                        .foregroundColor(.secondary)
+                        .foregroundColor(.primary)
                     Spacer()
                     Text("\(Int(profile.minSizeMB)) MB")
                         .font(.caption)
                         .fontWeight(.medium)
+                        .foregroundColor(.primary)
                 }
                 Slider(value: $profile.minSizeMB, in: 1...1000, step: 1)
                     .labelsHidden()
@@ -83,11 +86,12 @@ struct SidebarView: View {
                 HStack {
                     Text("Máximo:")
                         .font(.caption)
-                        .foregroundColor(.secondary)
+                        .foregroundColor(.primary)
                     if let maxMB = profile.maxSizeMB {
                         Text("\(Int(maxMB)) MB")
                             .font(.caption)
                             .fontWeight(.medium)
+                            .foregroundColor(.primary)
                     } else {
                         Text("Sin límite")
                             .font(.caption)
@@ -134,7 +138,7 @@ struct SidebarView: View {
                 HStack {
                     Text("Principal:")
                         .font(.caption)
-                        .foregroundColor(.secondary)
+                        .foregroundColor(.primary)
                     Spacer()
                     Picker("", selection: $profile.sortBy) {
                         ForEach(ScanProfile.SortField.allCases, id: \.self) { field in
@@ -148,7 +152,7 @@ struct SidebarView: View {
                 HStack {
                     Text("Secundario:")
                         .font(.caption)
-                        .foregroundColor(.secondary)
+                        .foregroundColor(.primary)
                     Spacer()
                     Picker("", selection: Binding(
                         get: { profile.secondarySortBy ?? .name },
@@ -179,11 +183,12 @@ struct SidebarView: View {
                 HStack {
                     Text("Límite:")
                         .font(.caption)
-                        .foregroundColor(.secondary)
+                        .foregroundColor(.primary)
                     Spacer()
                     Text(profile.limit == 0 ? "Sin límite" : "\(profile.limit)")
                         .font(.caption)
                         .fontWeight(.medium)
+                        .foregroundColor(.primary)
                 }
                 Slider(value: Binding(
                     get: { Double(profile.limit) },
@@ -193,6 +198,7 @@ struct SidebarView: View {
 
                 Toggle("Excluir dirs. de sistema", isOn: $profile.excludeSystemDirs)
                     .font(.caption)
+                    .foregroundColor(.primary)
             }
         }
         .padding(.vertical, 4)
@@ -203,8 +209,10 @@ struct SidebarView: View {
             HStack {
                 Image(systemName: "clock")
                     .font(.subheadline)
+                    .foregroundColor(.accentColor)
                 Text("Historial")
                     .font(.subheadline)
+                    .foregroundColor(.primary)
                 Spacer()
                 Image(systemName: "chevron.right")
                     .font(.caption2)
@@ -234,7 +242,7 @@ struct DirectoryPickerButton: View {
                     .foregroundColor(.secondary)
             }
             .padding(8)
-            .background(Color(nsColor: .textBackgroundColor))
+            .background(Color.white.opacity(0.5))
             .cornerRadius(6)
         }
         .buttonStyle(.plain)
