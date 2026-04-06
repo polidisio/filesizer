@@ -7,27 +7,24 @@ struct SidebarView: View {
     private let sidebarBlue = Color(red: 0.863, green: 0.910, blue: 0.957)
 
     var body: some View {
-        List {
-            Section {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 16) {
                 searchField
-            }
-            .listRowBackground(Color.clear)
-
-            Section {
-                directorySection
+                
                 sizeSection
+                
                 sortSection
+                
                 optionsSection
-            }
-            .listRowBackground(sidebarBlue)
-
-            Section {
+                
+                Spacer(minLength: 20)
+                
                 historyButton
             }
-            .listRowBackground(sidebarBlue)
+            .padding(.horizontal, 12)
+            .padding(.top, 12)
         }
-        .listStyle(.sidebar)
-        .scrollContentBackground(.hidden)
+        .frame(minWidth: 220)
         .background(sidebarBlue)
     }
 
@@ -40,34 +37,17 @@ struct SidebarView: View {
                 .textFieldStyle(.plain)
                 .font(.caption)
         }
-        .padding(.vertical, 6)
-        .padding(.horizontal, 8)
+        .padding(.vertical, 8)
+        .padding(.horizontal, 10)
         .background(Color.white.opacity(0.6))
-        .cornerRadius(6)
-    }
-
-    private var directorySection: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            Text("DIRECTORY")
-                .font(.caption2)
-                .fontWeight(.semibold)
-                .foregroundColor(.secondary)
-                .tracking(0.5)
-
-            DirectoryPickerButton(directory: $profile.directory)
-        }
-        .padding(.vertical, 4)
+        .cornerRadius(8)
     }
 
     private var sizeSection: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("SIZE")
-                .font(.caption2)
-                .fontWeight(.semibold)
-                .foregroundColor(.secondary)
-                .tracking(0.5)
+            sectionLabel("SIZE")
 
-            VStack(spacing: 8) {
+            VStack(spacing: 12) {
                 HStack {
                     Text("Min:")
                         .font(.caption)
@@ -78,9 +58,9 @@ struct SidebarView: View {
                         .fontWeight(.medium)
                         .foregroundColor(.primary)
                 }
-                .frame(height: 20)
+                
                 Slider(value: $profile.minSizeMB, in: 1...1000, step: 1)
-                    .frame(height: 20)
+                    .controlSize(.small)
 
                 DottedDivider()
 
@@ -88,6 +68,7 @@ struct SidebarView: View {
                     Text("Max:")
                         .font(.caption)
                         .foregroundColor(.primary)
+                    Spacer()
                     if let maxMB = profile.maxSizeMB {
                         Text("\(Int(maxMB)) MB")
                             .font(.caption)
@@ -108,14 +89,13 @@ struct SidebarView: View {
                         .buttonStyle(.plain)
                     }
                 }
-                .frame(height: 20)
 
                 if profile.maxSizeMB != nil {
                     Slider(value: Binding(
                         get: { profile.maxSizeMB ?? 500 },
                         set: { profile.maxSizeMB = $0 }
                     ), in: 1...10000, step: 10)
-                    .frame(height: 20)
+                    .controlSize(.small)
                 } else {
                     Button("Set max") {
                         profile.maxSizeMB = 500
@@ -124,19 +104,17 @@ struct SidebarView: View {
                     .buttonStyle(.bordered)
                 }
             }
+            .padding(10)
+            .background(Color.white.opacity(0.4))
+            .cornerRadius(8)
         }
-        .padding(.vertical, 4)
     }
 
     private var sortSection: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("SORT")
-                .font(.caption2)
-                .fontWeight(.semibold)
-                .foregroundColor(.secondary)
-                .tracking(0.5)
+            sectionLabel("SORT")
 
-            VStack(spacing: 8) {
+            VStack(spacing: 12) {
                 HStack {
                     Text("Primary:")
                         .font(.caption)
@@ -150,7 +128,6 @@ struct SidebarView: View {
                     .labelsHidden()
                     .frame(width: 100)
                 }
-                .frame(height: 20)
 
                 HStack {
                     Text("Secondary:")
@@ -169,21 +146,18 @@ struct SidebarView: View {
                     .labelsHidden()
                     .frame(width: 100)
                 }
-                .frame(height: 20)
             }
+            .padding(10)
+            .background(Color.white.opacity(0.4))
+            .cornerRadius(8)
         }
-        .padding(.vertical, 4)
     }
 
     private var optionsSection: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("OPTIONS")
-                .font(.caption2)
-                .fontWeight(.semibold)
-                .foregroundColor(.secondary)
-                .tracking(0.5)
+            sectionLabel("OPTIONS")
 
-            VStack(spacing: 8) {
+            VStack(spacing: 12) {
                 HStack {
                     Text("Limit:")
                         .font(.caption)
@@ -194,19 +168,21 @@ struct SidebarView: View {
                         .fontWeight(.medium)
                         .foregroundColor(.primary)
                 }
-                .frame(height: 20)
+                
                 Slider(value: Binding(
                     get: { Double(profile.limit) },
                     set: { profile.limit = Int($0) }
                 ), in: 0...500, step: 10)
-                .frame(height: 20)
+                .controlSize(.small)
 
                 Toggle("Exclude system dirs", isOn: $profile.excludeSystemDirs)
                     .font(.caption)
                     .foregroundColor(.primary)
             }
+            .padding(10)
+            .background(Color.white.opacity(0.4))
+            .cornerRadius(8)
         }
-        .padding(.vertical, 4)
     }
 
     private var historyButton: some View {
@@ -223,8 +199,19 @@ struct SidebarView: View {
                     .font(.caption2)
                     .foregroundColor(.secondary)
             }
+            .padding(10)
+            .background(Color.white.opacity(0.4))
+            .cornerRadius(8)
         }
         .buttonStyle(.plain)
+    }
+
+    private func sectionLabel(_ title: String) -> some View {
+        Text(title)
+            .font(.caption2)
+            .fontWeight(.semibold)
+            .foregroundColor(.secondary)
+            .tracking(0.5)
     }
 }
 
@@ -246,9 +233,9 @@ struct DirectoryPickerButton: View {
                     .font(.caption2)
                     .foregroundColor(.secondary)
             }
-            .padding(8)
+            .padding(10)
             .background(Color.white.opacity(0.5))
-            .cornerRadius(6)
+            .cornerRadius(8)
         }
         .buttonStyle(.plain)
     }
@@ -282,13 +269,15 @@ struct DirectoryPickerButton: View {
 
 struct DottedDivider: View {
     var body: some View {
-        HStack(spacing: 2) {
-            ForEach(0..<50, id: \.self) { _ in
-                Circle()
-                    .fill(Color.secondary.opacity(0.3))
-                    .frame(width: 2, height: 2)
+        GeometryReader { geometry in
+            HStack(spacing: 4) {
+                ForEach(0..<Int(geometry.size.width / 6), id: \.self) { _ in
+                    Circle()
+                        .fill(Color.gray.opacity(0.4))
+                        .frame(width: 3, height: 3)
+                }
             }
         }
-        .frame(height: 1)
+        .frame(height: 3)
     }
 }
