@@ -12,38 +12,12 @@ struct MainView: View {
         NavigationSplitView(columnVisibility: $columnVisibility) {
             SidebarView(profile: $viewModel.profile, showingHistory: $showingHistory)
         } detail: {
-            ZStack {
-                VStack(spacing: 0) {
-                    headerBar
-
-                    Divider()
-
-                    if viewModel.isScanning, let progress = viewModel.progress {
-                        ScanProgressView(
-                            progress: progress,
-                            isScanning: viewModel.isScanning,
-                            onCancel: { viewModel.cancelScan() }
-                        )
-                    } else {
-                        FileListView(
-                            viewModel: viewModel,
-                            onRevealInFinder: { file in
-                                viewModel.revealInFinder(file)
-                            },
-                            onDelete: { file in
-                                fileToDelete = file
-                                showingDeleteAlert = true
-                            }
-                        )
-                    }
-                }
-                .background(Color(nsColor: .textBackgroundColor))
+            VStack(spacing: 0) {
+                headerBar
+                Divider()
+                contentArea
             }
-            .overlay(alignment: .bottom) {
-                if let error = viewModel.errorMessage {
-                    errorBanner(error)
-                }
-            }
+            .background(Color(nsColor: .textBackgroundColor))
         }
         .navigationSplitViewStyle(.balanced)
         .toolbar {
@@ -107,7 +81,7 @@ struct MainView: View {
                     let count = viewModel.files.count
                     let total = viewModel.allFiles.count
                     if count == total {
-                        Text("\(count) files found")
+                        Text("\(count) files")
                             .font(.headline)
                     } else {
                         Text("\(count) of \(total) files")
@@ -128,23 +102,24 @@ struct MainView: View {
     }
 
     @ViewBuilder
-    private func errorBanner(_ message: String) -> some View {
-        HStack {
-            Image(systemName: "exclamationmark.triangle.fill")
-                .foregroundColor(.orange)
-            Text(message)
-                .font(.caption)
-            Spacer()
-            Button(action: { viewModel.errorMessage = nil }) {
-                Image(systemName: "xmark")
-                    .font(.caption)
-            }
-            .buttonStyle(.plain)
+    private var contentArea: some View {
+        if viewModel.isScanning, let progress = viewModel.progress {
+            ScanProgressView(
+                progress: progress,
+                isScanning: viewModel.isScanning,
+                onCancel: { viewModel.cancelScan() }
+            )
+        } else {
+            FileListView(
+                viewModel: viewModel,
+                onRevealInFinder: { file in
+                    viewModel.revealInFinder(file)
+                },
+                onDelete: { file in
+                    fileToDelete = file
+                    showingDeleteAlert = true
+                }
+            )
         }
-        .padding()
-        .background(Color.orange.opacity(0.2))
-        .cornerRadius(8)
-        .padding()
-        .transition(.move(edge: .bottom).combined(with: .opacity))
     }
 }
