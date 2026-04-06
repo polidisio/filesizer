@@ -1,6 +1,6 @@
-name: BigFiles
+name: FileSizer
 options:
-  bundleIdPrefix: com.bigfiles
+  bundleIdPrefix: com.filesizer
   deploymentTarget:
     macOS: "13.0"
   xcodeVersion: "15.0"
@@ -13,7 +13,7 @@ packages:
 
 settings:
   base:
-    PRODUCT_NAME: BigFiles
+    PRODUCT_NAME: FileSizer
     MARKETING_VERSION: "1.0.0"
     CURRENT_PROJECT_VERSION: "1"
     SWIFT_VERSION: "5.9"
@@ -23,34 +23,34 @@ settings:
     COMBINE_HIDPI_IMAGES: YES
 
 targets:
-  BigFiles:
+  FileSizer:
     type: application
     platform: macOS
     sources:
-      - path: BigFiles
+      - path: FileSizer
         excludes:
           - "**/.DS_Store"
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.bigfiles.app
-        INFOPLIST_FILE: BigFiles/Resources/Info.plist
-        CODE_SIGN_ENTITLEMENTS: BigFiles/Resources/BigFiles.entitlements
+        PRODUCT_BUNDLE_IDENTIFIER: com.filesizer.app
+        INFOPLIST_FILE: FileSizer/Resources/Info.plist
+        CODE_SIGN_ENTITLEMENTS: FileSizer/Resources/FileSizer.entitlements
         LD_RUNPATH_SEARCH_PATHS: "$(inherited) @executable_path/../Frameworks"
         SWIFT_EMIT_LOC_STRINGS: YES
         GENERATE_INFOPLIST_FILE: NO
     dependencies:
       - package: SQLite
     entitlements:
-      path: BigFiles/Resources/BigFiles.entitlements
+      path: FileSizer/Resources/FileSizer.entitlements
       properties:
         com.apple.security.app-sandbox: true
         com.apple.security.files.user-selected.read-write: true
 
 schemes:
-  BigFiles:
+  FileSizer:
     build:
       targets:
-        BigFiles: all
+        FileSizer: all
     run:
       config: Debug
     test:

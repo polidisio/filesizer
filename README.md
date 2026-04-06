@@ -1,7 +1,7 @@
-# BigFiles for macOS
+# FileSizer for macOS
 
 <p align="center">
-  <img src="https://img.icons8.com/color/96/000000/search--v1.png" alt="BigFiles Icon" width="80"/>
+  <img src="https://img.icons8.com/color/96/000000/search--v1.png" alt="FileSizer Icon" width="80"/>
 </p>
 
 <p align="center">
@@ -36,14 +36,14 @@
 
 ```bash
 # Clone the repo
-git clone https://github.com/polidisio/bigfiles-mac.git
-cd bigfiles-mac
+git clone https://github.com/polidisio/filesizer.git
+cd filesizer
 
 # Generate Xcode project (requires XcodeGen)
 xcodegen generate
 
 # Open in Xcode
-open BigFiles.xcodeproj
+open FileSizer.xcodeproj
 ```
 
 Then in Xcode: **Product > Run** (⌘R) to build and run.
@@ -51,14 +51,14 @@ Then in Xcode: **Product > Run** (⌘R) to build and run.
 ## Project Structure
 
 ```
-BigFiles/
+FileSizer/
 ├── App/                 # App entry point
 ├── Models/              # Data models (ScannedFile, ScanProfile, ScanResult)
 ├── ViewModels/          # MVVM view models
 ├── Views/               # SwiftUI views
 ├── Services/            # FileScanner, ExclusionManager, FinderComments
 ├── Persistence/         # SQLite.swift for scan history
-└── Resources/           # Info.plist, entitlements, assets
+└── Resources/          # Info.plist, entitlements, assets
 ```
 
 ## Architecture
