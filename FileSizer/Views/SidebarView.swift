@@ -78,10 +78,11 @@ struct SidebarView: View {
                         .fontWeight(.medium)
                         .foregroundColor(.primary)
                 }
+                .frame(height: 20)
                 Slider(value: $profile.minSizeMB, in: 1...1000, step: 1)
-                    .labelsHidden()
+                    .frame(height: 20)
 
-                Divider()
+                DottedDivider()
 
                 HStack {
                     Text("Max:")
@@ -101,24 +102,25 @@ struct SidebarView: View {
                     if profile.maxSizeMB != nil {
                         Button(action: { profile.maxSizeMB = nil }) {
                             Image(systemName: "xmark.circle.fill")
-                                .font(.caption2)
+                                .font(.caption)
                                 .foregroundColor(.secondary)
                         }
                         .buttonStyle(.plain)
                     }
                 }
+                .frame(height: 20)
 
                 if profile.maxSizeMB != nil {
                     Slider(value: Binding(
                         get: { profile.maxSizeMB ?? 500 },
                         set: { profile.maxSizeMB = $0 }
                     ), in: 1...10000, step: 10)
-                    .labelsHidden()
+                    .frame(height: 20)
                 } else {
                     Button("Set max") {
                         profile.maxSizeMB = 500
                     }
-                    .font(.caption2)
+                    .font(.caption)
                     .buttonStyle(.bordered)
                 }
             }
@@ -148,6 +150,7 @@ struct SidebarView: View {
                     .labelsHidden()
                     .frame(width: 100)
                 }
+                .frame(height: 20)
 
                 HStack {
                     Text("Secondary:")
@@ -166,6 +169,7 @@ struct SidebarView: View {
                     .labelsHidden()
                     .frame(width: 100)
                 }
+                .frame(height: 20)
             }
         }
         .padding(.vertical, 4)
@@ -190,11 +194,12 @@ struct SidebarView: View {
                         .fontWeight(.medium)
                         .foregroundColor(.primary)
                 }
+                .frame(height: 20)
                 Slider(value: Binding(
                     get: { Double(profile.limit) },
                     set: { profile.limit = Int($0) }
                 ), in: 0...500, step: 10)
-                .labelsHidden()
+                .frame(height: 20)
 
                 Toggle("Exclude system dirs", isOn: $profile.excludeSystemDirs)
                     .font(.caption)
@@ -272,5 +277,18 @@ struct DirectoryPickerButton: View {
                 directory = url.path
             }
         }
+    }
+}
+
+struct DottedDivider: View {
+    var body: some View {
+        HStack(spacing: 2) {
+            ForEach(0..<50, id: \.self) { _ in
+                Circle()
+                    .fill(Color.secondary.opacity(0.3))
+                    .frame(width: 2, height: 2)
+            }
+        }
+        .frame(height: 1)
     }
 }
