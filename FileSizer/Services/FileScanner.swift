@@ -32,7 +32,7 @@ actor FileScanner {
 
     func scan(
         profile: ScanProfile,
-        progressHandler: @escaping (Progress) -> Void
+        progressHandler: @escaping @Sendable (Progress) -> Void
     ) async throws -> [ScannedFile] {
         isCancelled = false
 
@@ -61,12 +61,19 @@ actor FileScanner {
             throw ScanError.accessDenied(profile.directory)
         }
 
-        for case let fileURL as URL in directoryEnumerator {
-            if isCancelled {
-                throw ScanError.cancelled
+        var fileURL: URL?
+        while !isCancelled {
+            do {
+                fileURL = try directoryEnumerator.nextObject() as? URL
+            } catch {
+                break
+            }
+            
+            guard let currentURL = fileURL else {
+                break
             }
 
-            let path = fileURL.path
+            let path = currentURL.path
 
             if exclusionManager.shouldExclude(path: path) {
                 directoryEnumerator.skipDescendants()
@@ -74,7 +81,7 @@ actor FileScanner {
             }
 
             do {
-                let resourceValues = try fileURL.resourceValues(forKeys: [
+                let resourceValues = try currentURL.resourceValues(forKeys: [
                     .fileSizeKey,
                     .contentModificationDateKey,
                     .isRegularFileKey
@@ -90,13 +97,13 @@ actor FileScanner {
                     continue
                 }
 
-                let fileExtension = fileURL.pathExtension.lowercased()
+                let fileExtension = currentURL.pathExtension.lowercased()
                 if !profile.extensions.isEmpty && !profile.extensions.contains(fileExtension) {
                     continue
                 }
 
                 let modifiedDate = resourceValues.contentModificationDate ?? Date.distantPast
-                let name = fileURL.lastPathComponent
+                let name = currentURL.lastPathComponent
 
                 let scannedFile = ScannedFile(
                     path: path,
@@ -121,6 +128,10 @@ actor FileScanner {
             } catch {
                 continue
             }
+        }
+
+        if isCancelled {
+            throw ScanError.cancelled
         }
 
         scannedFiles = sortFiles(scannedFiles, by: profile.sortBy)
