@@ -1,0 +1,34 @@
+# Xcode
+*.xcodeproj
+*.xcworkspace
+!default.xcworkspace
+!default.xcworkspace/contents.xcworkspacedata
+xcuserdata/
+*.moved-aside
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# Swift Package Manager
+.Packages/
+.build/
+.swiftpm/
+
+# CocoaPods
+Pods/
+
+# DerivedData
+DerivedData/
+
+# Localization
+*.lproj/
+Shared/
+*.xcstrings
+
+# Misc
+.DS_Store
+*.swp
+*~
+.vscode/
+.idea/
