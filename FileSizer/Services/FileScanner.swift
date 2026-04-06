@@ -63,11 +63,7 @@ actor FileScanner {
 
         var fileURL: URL?
         while !isCancelled {
-            do {
-                fileURL = try directoryEnumerator.nextObject() as? URL
-            } catch {
-                break
-            }
+            fileURL = directoryEnumerator.nextObject() as? URL
             
             guard let currentURL = fileURL else {
                 break
