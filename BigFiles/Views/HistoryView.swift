@@ -17,6 +17,12 @@ struct HistoryView: View {
                     }
                     .buttonStyle(.bordered)
                 }
+                Button(action: { dismiss() }) {
+                    Image(systemName: "xmark.circle.fill")
+                        .font(.title2)
+                        .foregroundColor(.secondary)
+                }
+                .buttonStyle(.plain)
             }
             .padding()
 
