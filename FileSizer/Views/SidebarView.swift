@@ -26,7 +26,7 @@ struct SidebarView: View {
             .padding(.top, 12)
         }
         .frame(minWidth: 220)
-        .background(Color.accentColor.opacity(0.12))
+        .background(Color(nsColor: .windowBackgroundColor))
     }
 
     private var extensionsSection: some View {
@@ -37,14 +37,14 @@ struct SidebarView: View {
                 if !profile.extensions.isEmpty {
                     Button(action: { profile.extensions = [] }) {
                         Text("Clear")
-                            .font(.caption2)
+                            .font(.caption)
                             .foregroundColor(.secondary)
                     }
                     .buttonStyle(.plain)
                 }
             }
 
-            VStack(spacing: 8) {
+            VStack(spacing: 10) {
                 if profile.extensions.isEmpty {
                     Text("All extensions")
                         .font(.caption)
@@ -52,7 +52,7 @@ struct SidebarView: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                 } else {
                     ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: 4) {
+                        HStack(spacing: 6) {
                             ForEach(profile.extensions, id: \.self) { ext in
                                 ExtensionChip(text: ext) {
                                     profile.extensions.removeAll { $0 == ext }
@@ -66,32 +66,35 @@ struct SidebarView: View {
                     TextField("Add ext...", text: $newExtension)
                         .textFieldStyle(.plain)
                         .font(.caption)
-                        .frame(height: 24)
-                        .padding(.horizontal, 8)
-                        .background(Color.primary.opacity(0.08))
-                        .cornerRadius(4)
+                        .frame(height: 26)
+                        .padding(.horizontal, 10)
+                        .background(Color.primary.opacity(0.1))
+                        .cornerRadius(6)
                         .onSubmit {
                             addExtension()
                         }
 
                     Button(action: { addExtension() }) {
                         Image(systemName: "plus.circle.fill")
+                            .font(.body)
                             .foregroundColor(.accentColor)
                     }
                     .buttonStyle(.plain)
                 }
 
                 // Quick add buttons
-                HStack(spacing: 4) {
+                HStack(spacing: 6) {
                     QuickAddButton(label: "Images") { addExtension("jpg") }
                     QuickAddButton(label: "Video") { addExtension("mp4") }
                     QuickAddButton(label: "Audio") { addExtension("mp3") }
                     QuickAddButton(label: "Docs") { addExtension("pdf") }
                 }
             }
-            .padding(10)
-            .background(Color.primary.opacity(0.05))
-            .cornerRadius(8)
+            .padding(12)
+            .background(
+                RoundedRectangle(cornerRadius: 10)
+                    .fill(Color(nsColor: .controlBackgroundColor))
+            )
         }
     }
 
@@ -109,17 +112,19 @@ struct SidebarView: View {
         HStack {
             Image(systemName: "magnifyingglass")
                 .foregroundColor(.secondary)
-                .font(.caption)
+                .font(.body)
             TextField("Search...", text: $profile.searchText)
                 .textFieldStyle(.plain)
-                .font(.caption)
+                .font(.body)
                 .focused($isSearchFocused)
                 .onSubmit { isSearchFocused = false }
         }
-        .padding(.vertical, 8)
-        .padding(.horizontal, 10)
-        .background(Color.primary.opacity(0.08))
-        .cornerRadius(8)
+        .padding(.vertical, 10)
+        .padding(.horizontal, 12)
+        .background(
+            RoundedRectangle(cornerRadius: 10)
+                .fill(Color(nsColor: .controlBackgroundColor))
+        )
     }
 
     private var sizeSection: some View {
@@ -129,33 +134,33 @@ struct SidebarView: View {
             VStack(spacing: 12) {
                 HStack {
                     Text("Min:")
-                        .font(.caption)
+                        .font(.subheadline)
                         .foregroundColor(.primary)
                     Spacer()
                     Text("\(Int(profile.minSizeMB)) MB")
-                        .font(.caption)
+                        .font(.subheadline)
                         .fontWeight(.medium)
-                        .foregroundColor(.primary)
+                        .foregroundColor(.blue)
                 }
-                
+
                 Slider(value: $profile.minSizeMB, in: 1...1000, step: 1)
                     .controlSize(.small)
 
-                DottedDivider()
+                SectionDivider()
 
                 HStack {
                     Text("Max:")
-                        .font(.caption)
+                        .font(.subheadline)
                         .foregroundColor(.primary)
                     Spacer()
                     if let maxMB = profile.maxSizeMB {
                         Text("\(Int(maxMB)) MB")
-                            .font(.caption)
+                            .font(.subheadline)
                             .fontWeight(.medium)
-                            .foregroundColor(.primary)
+                            .foregroundColor(.blue)
                     } else {
                         Text("No limit")
-                            .font(.caption)
+                            .font(.subheadline)
                             .foregroundColor(.secondary)
                     }
                     Spacer()
@@ -183,9 +188,11 @@ struct SidebarView: View {
                     .buttonStyle(.bordered)
                 }
             }
-            .padding(10)
-            .background(Color.primary.opacity(0.05))
-            .cornerRadius(8)
+            .padding(12)
+            .background(
+                RoundedRectangle(cornerRadius: 10)
+                    .fill(Color(nsColor: .controlBackgroundColor))
+            )
         }
     }
 
@@ -196,7 +203,7 @@ struct SidebarView: View {
             VStack(spacing: 12) {
                 HStack {
                     Text("Primary:")
-                        .font(.caption)
+                        .font(.subheadline)
                         .foregroundColor(.primary)
                     Spacer()
                     Picker("", selection: $profile.sortBy) {
@@ -210,7 +217,7 @@ struct SidebarView: View {
 
                 HStack {
                     Text("Secondary:")
-                        .font(.caption)
+                        .font(.subheadline)
                         .foregroundColor(.primary)
                     Spacer()
                     Picker("", selection: Binding(
@@ -226,9 +233,11 @@ struct SidebarView: View {
                     .frame(width: 100)
                 }
             }
-            .padding(10)
-            .background(Color.primary.opacity(0.05))
-            .cornerRadius(8)
+            .padding(12)
+            .background(
+                RoundedRectangle(cornerRadius: 10)
+                    .fill(Color(nsColor: .controlBackgroundColor))
+            )
         }
     }
 
@@ -239,15 +248,15 @@ struct SidebarView: View {
             VStack(spacing: 12) {
                 HStack {
                     Text("Limit:")
-                        .font(.caption)
+                        .font(.subheadline)
                         .foregroundColor(.primary)
                     Spacer()
                     Text(profile.limit == 0 ? "No limit" : "\(profile.limit)")
-                        .font(.caption)
+                        .font(.subheadline)
                         .fontWeight(.medium)
                         .foregroundColor(.primary)
                 }
-                
+
                 Slider(value: Binding(
                     get: { Double(profile.limit) },
                     set: { profile.limit = Int($0) }
@@ -255,12 +264,14 @@ struct SidebarView: View {
                 .controlSize(.small)
 
                 Toggle("Exclude system dirs", isOn: $profile.excludeSystemDirs)
-                    .font(.caption)
+                    .font(.subheadline)
                     .foregroundColor(.primary)
             }
-            .padding(10)
-            .background(Color.primary.opacity(0.05))
-            .cornerRadius(8)
+            .padding(12)
+            .background(
+                RoundedRectangle(cornerRadius: 10)
+                    .fill(Color(nsColor: .controlBackgroundColor))
+            )
         }
     }
 
@@ -268,29 +279,33 @@ struct SidebarView: View {
         Button(action: { showingHistory = true }) {
             HStack {
                 Image(systemName: "clock")
-                    .font(.subheadline)
+                    .font(.body)
                     .foregroundColor(.accentColor)
                 Text("History")
-                    .font(.subheadline)
+                    .font(.body)
                     .foregroundColor(.primary)
                 Spacer()
                 Image(systemName: "chevron.right")
-                    .font(.caption2)
+                    .font(.caption)
                     .foregroundColor(.secondary)
             }
-            .padding(10)
-            .background(Color.primary.opacity(0.05))
-            .cornerRadius(8)
+            .padding(12)
+            .background(
+                RoundedRectangle(cornerRadius: 10)
+                    .fill(Color(nsColor: .controlBackgroundColor))
+            )
         }
         .buttonStyle(.plain)
     }
 
     private func sectionLabel(_ title: String) -> some View {
         Text(title)
-            .font(.caption2)
-            .fontWeight(.semibold)
+            .font(.caption)
+            .fontWeight(.bold)
             .foregroundColor(.secondary)
-            .tracking(0.5)
+            .textCase(.uppercase)
+            .tracking(1)
+            .padding(.bottom, 4)
     }
 }
 
@@ -302,19 +317,22 @@ struct DirectoryPickerButton: View {
             HStack {
                 Image(systemName: "folder.fill")
                     .foregroundColor(.accentColor)
+                    .font(.body)
                 Text(truncatedPath)
-                    .font(.caption)
+                    .font(.subheadline)
                     .foregroundColor(.primary)
                     .lineLimit(1)
                     .truncationMode(.middle)
                 Spacer()
                 Image(systemName: "ellipsis")
-                    .font(.caption2)
+                    .font(.caption)
                     .foregroundColor(.secondary)
             }
-            .padding(10)
-            .background(Color.primary.opacity(0.06))
-            .cornerRadius(8)
+            .padding(12)
+            .background(
+                RoundedRectangle(cornerRadius: 10)
+                    .fill(Color(nsColor: .controlBackgroundColor))
+            )
         }
         .buttonStyle(.plain)
     }
@@ -346,18 +364,10 @@ struct DirectoryPickerButton: View {
     }
 }
 
-struct DottedDivider: View {
+struct SectionDivider: View {
     var body: some View {
-        GeometryReader { geometry in
-            HStack(spacing: 4) {
-                ForEach(0..<Int(geometry.size.width / 6), id: \.self) { _ in
-                    Circle()
-                        .fill(Color.secondary.opacity(0.3))
-                        .frame(width: 3, height: 3)
-                }
-            }
-        }
-        .frame(height: 3)
+        Divider()
+            .background(Color.secondary.opacity(0.2))
     }
 }
 
@@ -366,21 +376,21 @@ struct ExtensionChip: View {
     let onRemove: () -> Void
 
     var body: some View {
-        HStack(spacing: 2) {
-            Text(text)
-                .font(.caption2)
+        HStack(spacing: 4) {
+            Text(".\(text)")
+                .font(.caption)
                 .foregroundColor(.primary)
             Button(action: onRemove) {
                 Image(systemName: "xmark.circle.fill")
-                    .font(.caption2)
+                    .font(.caption)
                     .foregroundColor(.secondary)
             }
             .buttonStyle(.plain)
         }
-        .padding(.horizontal, 6)
-        .padding(.vertical, 3)
+        .padding(.horizontal, 8)
+        .padding(.vertical, 4)
         .background(Color.accentColor.opacity(0.15))
-        .cornerRadius(4)
+        .cornerRadius(6)
     }
 }
 
@@ -391,12 +401,12 @@ struct QuickAddButton: View {
     var body: some View {
         Button(action: action) {
             Text(label)
-                .font(.caption2)
+                .font(.caption)
                 .foregroundColor(.secondary)
-                .padding(.horizontal, 6)
-                .padding(.vertical, 2)
-                .background(Color.secondary.opacity(0.1))
-                .cornerRadius(4)
+                .padding(.horizontal, 8)
+                .padding(.vertical, 4)
+                .background(Color.secondary.opacity(0.15))
+                .cornerRadius(6)
         }
         .buttonStyle(.plain)
     }
