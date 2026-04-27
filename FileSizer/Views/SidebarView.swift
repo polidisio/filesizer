@@ -3,8 +3,7 @@ import SwiftUI
 struct SidebarView: View {
     @Binding var profile: ScanProfile
     @Binding var showingHistory: Bool
-
-    private let sidebarBlue = Color(red: 0.863, green: 0.910, blue: 0.957)
+    @FocusState private var isSearchFocused: Bool
 
     var body: some View {
         ScrollView {
@@ -25,7 +24,7 @@ struct SidebarView: View {
             .padding(.top, 12)
         }
         .frame(minWidth: 220)
-        .background(sidebarBlue)
+        .background(Color.accentColor.opacity(0.12))
     }
 
     private var searchField: some View {
@@ -36,10 +35,12 @@ struct SidebarView: View {
             TextField("Search...", text: $profile.searchText)
                 .textFieldStyle(.plain)
                 .font(.caption)
+                .focused($isSearchFocused)
+                .onSubmit { isSearchFocused = false }
         }
         .padding(.vertical, 8)
         .padding(.horizontal, 10)
-        .background(Color.white.opacity(0.6))
+        .background(Color.primary.opacity(0.08))
         .cornerRadius(8)
     }
 
@@ -105,7 +106,7 @@ struct SidebarView: View {
                 }
             }
             .padding(10)
-            .background(Color.white.opacity(0.4))
+            .background(Color.primary.opacity(0.05))
             .cornerRadius(8)
         }
     }
@@ -148,7 +149,7 @@ struct SidebarView: View {
                 }
             }
             .padding(10)
-            .background(Color.white.opacity(0.4))
+            .background(Color.primary.opacity(0.05))
             .cornerRadius(8)
         }
     }
@@ -180,7 +181,7 @@ struct SidebarView: View {
                     .foregroundColor(.primary)
             }
             .padding(10)
-            .background(Color.white.opacity(0.4))
+            .background(Color.primary.opacity(0.05))
             .cornerRadius(8)
         }
     }
@@ -200,7 +201,7 @@ struct SidebarView: View {
                     .foregroundColor(.secondary)
             }
             .padding(10)
-            .background(Color.white.opacity(0.4))
+            .background(Color.primary.opacity(0.05))
             .cornerRadius(8)
         }
         .buttonStyle(.plain)
@@ -234,7 +235,7 @@ struct DirectoryPickerButton: View {
                     .foregroundColor(.secondary)
             }
             .padding(10)
-            .background(Color.white.opacity(0.5))
+            .background(Color.primary.opacity(0.06))
             .cornerRadius(8)
         }
         .buttonStyle(.plain)
@@ -273,7 +274,7 @@ struct DottedDivider: View {
             HStack(spacing: 4) {
                 ForEach(0..<Int(geometry.size.width / 6), id: \.self) { _ in
                     Circle()
-                        .fill(Color.gray.opacity(0.4))
+                        .fill(Color.secondary.opacity(0.3))
                         .frame(width: 3, height: 3)
                 }
             }

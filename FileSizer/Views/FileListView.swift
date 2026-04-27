@@ -47,7 +47,7 @@ struct FileListView: View {
                 }
             }
         }
-        .background(Color.white)
+        .background(Color(NSColor.windowBackgroundColor))
     }
 }
 
@@ -92,7 +92,7 @@ struct FileRowView: View {
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 10)
-        .background(isSelected ? Color.accentColor.opacity(0.15) : Color.clear)
+        .background(isSelected ? Color.accentColor.opacity(0.15) : Color.primary.opacity(0.05))
         .contentShape(Rectangle())
         .onTapGesture { onSelect() }
         .contextMenu {

@@ -17,7 +17,7 @@ struct MainView: View {
                 Divider()
                 contentArea
             }
-            .background(Color.white)
+            .background(Color.primary.opacity(0.05))
         }
         .navigationSplitViewStyle(.balanced)
         .toolbar {
@@ -98,7 +98,7 @@ struct MainView: View {
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 12)
-        .background(Color.white)
+        .background(Color(NSColor.windowBackgroundColor))
     }
 
     @ViewBuilder
