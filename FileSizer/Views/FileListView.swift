@@ -4,6 +4,7 @@ struct FileListView: View {
     @ObservedObject var viewModel: ScanViewModel
     var onRevealInFinder: (ScannedFile) -> Void
     var onDelete: (ScannedFile) -> Void
+    var onQuickLook: (ScannedFile) -> Void
 
     var body: some View {
         Group {
@@ -40,7 +41,8 @@ struct FileListView: View {
                         isSelected: viewModel.selectedFile?.id == file.id,
                         onSelect: { viewModel.selectedFile = file },
                         onRevealInFinder: { onRevealInFinder(file) },
-                        onDelete: { onDelete(file) }
+                        onDelete: { onDelete(file) },
+                        onQuickLook: { onQuickLook(file) }
                     )
                     Divider()
                     .padding(.leading, 56)
@@ -57,6 +59,7 @@ struct FileRowView: View {
     let onSelect: () -> Void
     let onRevealInFinder: () -> Void
     let onDelete: () -> Void
+    let onQuickLook: () -> Void
 
     var body: some View {
         HStack(spacing: 12) {
@@ -66,10 +69,22 @@ struct FileRowView: View {
                 .frame(width: 32)
 
             VStack(alignment: .leading, spacing: 2) {
-                Text(file.name)
-                    .font(.body)
-                    .lineLimit(1)
-                    .foregroundColor(.primary)
+                HStack {
+                    Text(file.name)
+                        .font(.body)
+                        .lineLimit(1)
+                        .foregroundColor(.primary)
+
+                    if isSelected {
+                        Text("Space for QuickLook")
+                            .font(.caption2)
+                            .foregroundColor(.secondary)
+                            .padding(.horizontal, 6)
+                            .padding(.vertical, 2)
+                            .background(Color.secondary.opacity(0.2))
+                            .cornerRadius(4)
+                    }
+                }
                 Text(file.path)
                     .font(.caption)
                     .foregroundColor(.secondary)
@@ -94,9 +109,15 @@ struct FileRowView: View {
         .padding(.vertical, 10)
         .background(isSelected ? Color.accentColor.opacity(0.15) : Color.primary.opacity(0.05))
         .contentShape(Rectangle())
-        .onTapGesture { onSelect() }
+        .onTapGesture(count: 2) {
+            onQuickLook()
+        }
+        .onTapGesture {
+            onSelect()
+        }
         .contextMenu {
             Button("Reveal in Finder") { onRevealInFinder() }
+            Button("QuickLook") { onQuickLook() }
             Divider()
             Button("Move to Trash", role: .destructive) { onDelete() }
         }

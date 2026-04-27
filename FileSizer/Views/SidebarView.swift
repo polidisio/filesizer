@@ -9,15 +9,17 @@ struct SidebarView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
                 searchField
-                
+
                 sizeSection
-                
+
+                extensionsSection
+
                 sortSection
-                
+
                 optionsSection
-                
+
                 Spacer(minLength: 20)
-                
+
                 historyButton
             }
             .padding(.horizontal, 12)
@@ -25,6 +27,82 @@ struct SidebarView: View {
         }
         .frame(minWidth: 220)
         .background(Color.accentColor.opacity(0.12))
+    }
+
+    private var extensionsSection: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack {
+                sectionLabel("EXTENSIONS")
+                Spacer()
+                if !profile.extensions.isEmpty {
+                    Button(action: { profile.extensions = [] }) {
+                        Text("Clear")
+                            .font(.caption2)
+                            .foregroundColor(.secondary)
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+
+            VStack(spacing: 8) {
+                if profile.extensions.isEmpty {
+                    Text("All extensions")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                } else {
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: 4) {
+                            ForEach(profile.extensions, id: \.self) { ext in
+                                ExtensionChip(text: ext) {
+                                    profile.extensions.removeAll { $0 == ext }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                HStack {
+                    TextField("Add ext...", text: $newExtension)
+                        .textFieldStyle(.plain)
+                        .font(.caption)
+                        .frame(height: 24)
+                        .padding(.horizontal, 8)
+                        .background(Color.primary.opacity(0.08))
+                        .cornerRadius(4)
+                        .onSubmit {
+                            addExtension()
+                        }
+
+                    Button(action: { addExtension() }) {
+                        Image(systemName: "plus.circle.fill")
+                            .foregroundColor(.accentColor)
+                    }
+                    .buttonStyle(.plain)
+                }
+
+                // Quick add buttons
+                HStack(spacing: 4) {
+                    QuickAddButton(label: "Images") { addExtension("jpg") }
+                    QuickAddButton(label: "Video") { addExtension("mp4") }
+                    QuickAddButton(label: "Audio") { addExtension("mp3") }
+                    QuickAddButton(label: "Docs") { addExtension("pdf") }
+                }
+            }
+            .padding(10)
+            .background(Color.primary.opacity(0.05))
+            .cornerRadius(8)
+        }
+    }
+
+    @State private var newExtension: String = ""
+
+    private func addExtension(_ ext: String? = nil) {
+        let extToAdd = (ext ?? newExtension).lowercased().trimmingCharacters(in: .whitespaces)
+        if !extToAdd.isEmpty && !profile.extensions.contains(extToAdd) {
+            profile.extensions.append(extToAdd)
+        }
+        newExtension = ""
     }
 
     private var searchField: some View {
@@ -280,5 +358,46 @@ struct DottedDivider: View {
             }
         }
         .frame(height: 3)
+    }
+}
+
+struct ExtensionChip: View {
+    let text: String
+    let onRemove: () -> Void
+
+    var body: some View {
+        HStack(spacing: 2) {
+            Text(text)
+                .font(.caption2)
+                .foregroundColor(.primary)
+            Button(action: onRemove) {
+                Image(systemName: "xmark.circle.fill")
+                    .font(.caption2)
+                    .foregroundColor(.secondary)
+            }
+            .buttonStyle(.plain)
+        }
+        .padding(.horizontal, 6)
+        .padding(.vertical, 3)
+        .background(Color.accentColor.opacity(0.15))
+        .cornerRadius(4)
+    }
+}
+
+struct QuickAddButton: View {
+    let label: String
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            Text(label)
+                .font(.caption2)
+                .foregroundColor(.secondary)
+                .padding(.horizontal, 6)
+                .padding(.vertical, 2)
+                .background(Color.secondary.opacity(0.1))
+                .cornerRadius(4)
+        }
+        .buttonStyle(.plain)
     }
 }

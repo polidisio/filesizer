@@ -12,6 +12,7 @@ final class ScanViewModel: ObservableObject {
 
     private let scanner = FileScanner()
     private let historyStore = ScanHistoryStore.shared
+    private var scanStartTime: Date?
 
     var files: [ScannedFile] {
         var result = allFiles
@@ -40,6 +41,7 @@ final class ScanViewModel: ObservableObject {
         allFiles = []
         progress = nil
         selectedFile = nil
+        scanStartTime = Date()
 
         do {
             let scannedFiles = try await scanner.scan(profile: profile) { [weak self] prog in
@@ -53,11 +55,23 @@ final class ScanViewModel: ObservableObject {
             if !allFiles.isEmpty {
                 let result = ScanResult(profile: profile, files: files)
                 historyStore.save(result: result)
+
+                // Send notification
+                let duration = Date().timeIntervalSince(scanStartTime ?? Date())
+                let totalSize = files.reduce(0) { $0 + $1.size }
+                NotificationManager.shared.sendScanCompleteNotification(
+                    fileCount: files.count,
+                    totalSize: totalSize,
+                    duration: duration,
+                    directory: profile.directory
+                )
             }
         } catch let error as FileScanner.ScanError {
             errorMessage = error.localizedDescription
+            NotificationManager.shared.sendErrorNotification(message: error.localizedDescription)
         } catch {
             errorMessage = error.localizedDescription
+            NotificationManager.shared.sendErrorNotification(message: error.localizedDescription)
         }
 
         isScanning = false
