@@ -93,7 +93,7 @@ actor FileScanner {
                     continue
                 }
 
-                let fileExtension = currentURL.pathExtension.lowercased()
+                let fileExtension = currentURL.pathExtension.lowercased().trimmingCharacters(in: CharacterSet(charactersIn: "."))
                 if !profile.extensions.isEmpty && !profile.extensions.contains(fileExtension) {
                     continue
                 }

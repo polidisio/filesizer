@@ -25,7 +25,7 @@ struct SidebarView: View {
             .padding(.horizontal, 12)
             .padding(.top, 12)
         }
-        .frame(minWidth: 220)
+        .frame(minWidth: 280, idealWidth: 300)
         .background(Color(nsColor: .windowBackgroundColor))
     }
 
@@ -82,8 +82,11 @@ struct SidebarView: View {
                     .buttonStyle(.plain)
                 }
 
-                // Quick add buttons
-                HStack(spacing: 6) {
+                // Quick add buttons - 2x2 grid
+                LazyVGrid(columns: [
+                    GridItem(.flexible(), spacing: 6),
+                    GridItem(.flexible(), spacing: 6)
+                ], spacing: 6) {
                     QuickAddButton(label: "Images") { addExtension("jpg") }
                     QuickAddButton(label: "Video") { addExtension("mp4") }
                     QuickAddButton(label: "Audio") { addExtension("mp3") }
@@ -101,7 +104,11 @@ struct SidebarView: View {
     @State private var newExtension: String = ""
 
     private func addExtension(_ ext: String? = nil) {
-        let extToAdd = (ext ?? newExtension).lowercased().trimmingCharacters(in: .whitespaces)
+        var extToAdd = (ext ?? newExtension).lowercased().trimmingCharacters(in: .whitespaces)
+        // Remove leading dot if present
+        if extToAdd.hasPrefix(".") {
+            extToAdd = String(extToAdd.dropFirst())
+        }
         if !extToAdd.isEmpty && !profile.extensions.contains(extToAdd) {
             profile.extensions.append(extToAdd)
         }
@@ -303,8 +310,7 @@ struct SidebarView: View {
             .font(.caption)
             .fontWeight(.bold)
             .foregroundColor(.secondary)
-            .textCase(.uppercase)
-            .tracking(1)
+            .tracking(0.5)
             .padding(.bottom, 4)
     }
 }
