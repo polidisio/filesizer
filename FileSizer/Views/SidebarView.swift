@@ -8,6 +8,8 @@ struct SidebarView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
+                directorySection
+
                 searchField
 
                 sizeSection
@@ -113,6 +115,13 @@ struct SidebarView: View {
             profile.extensions.append(extToAdd)
         }
         newExtension = ""
+    }
+
+    private var directorySection: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            sectionLabel("DIRECTORY")
+            DirectoryPickerButton(directory: $profile.directory)
+        }
     }
 
     private var searchField: some View {
